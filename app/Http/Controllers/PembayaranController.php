@@ -21,6 +21,48 @@ class PembayaranController extends Controller
     }
 
     public function simpanPembayaran(request $request){
+        $errors = [];
+
+        if (empty($request->nama)) {
+            $errors['nama'] = 'Nama diperlukan.';
+        }
+        if (empty($request->nomor_telepon)) {
+            $errors['nomor_telepon'] = 'Nomor telepon diperlukan.';
+        }
+        if (empty($request->fasilitas)) {
+            $errors['fasilitas'] = 'Fasilitas diperlukan.';
+        }
+        if (empty($request->tanggal_acara)) {
+            $errors['tanggal_acara'] = 'Tanggal acara diperlukan.';
+        }
+        if (empty($request->tanggal_selesai)) {
+            $errors['tanggal_selesai'] = 'Tanggal selesai diperlukan.';
+        }
+        if (empty($request->harga)) {
+            $errors['harga'] = 'Harga diperlukan.';
+        }
+        if (empty($request->bayar)) {
+            $errors['bayar'] = 'Bayar diperlukan.';
+        }
+        if (empty($request->kembalian)) {
+            $errors['kembalian'] = 'Kembalian diperlukan.';
+        }
+        if (empty($request->total)) {
+            $errors['total'] = 'Total diperlukan.';
+        }
+        if ($request->tanggal_acara === $request->tanggal_selesai) {
+            $errors['tanggal_acara'] = 'Tanggal acara dan tanggal selesai tidak boleh sama.';
+        }
+        if (!empty($errors)) {
+            return redirect()->back()->withInput()->withErrors($errors);
+        }
+        $existingAcara = PembayaranModel::where('tanggal_acara', $request->tanggal_acara)->first();
+        $existingSelesai = PembayaranModel::where('tanggal_selesai', $request->tanggal_selesai)->first();
+    
+        if ($existingAcara || $existingSelesai) {
+            return redirect()->route('error')->with('error', 'Tanggal acara atau tanggal selesai sudah ada.');
+        }
+
         $data= new PembayaranModel;
         $data->nama=$request->nama;
         $data->nomor_telepon=$request->nomor_telepon;

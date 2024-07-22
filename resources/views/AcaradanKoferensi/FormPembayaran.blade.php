@@ -86,6 +86,7 @@
         document.getElementById('diskon').value = diskon.toFixed(2);
         document.getElementById('total').value = total.toFixed(2);
         document.getElementById('kembalian').value = kembalian.toFixed(2);
+
     }
 
     window.onload = updateHarga;
